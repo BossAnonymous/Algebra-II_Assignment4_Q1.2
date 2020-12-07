@@ -1,4 +1,7 @@
-from typing import get_args
+""" Finds elements <one> and <two> in Z[sqrt(-3)] which do not divide <test>
+    (defaulted to the irreducible element we found, 1+sqrt(-3)) but for which
+    <one>*<two> does divide <test>.
+"""
 import numpy as np
 
 
@@ -47,6 +50,7 @@ class GaussIntRoot3:
         return f"{self.a}{sign}{abs(self.b)}isqrt(3)"
 
     def Complex(self) -> complex:
+        """ Returns <self> as a complex number """
         return complex(self.a, self.b*s3)
 
     def __truediv__(self, other):
@@ -56,19 +60,16 @@ class GaussIntRoot3:
         return other.Complex()/self.Complex()
 
     def TestDivisible(self, divisor, eps: float=1e-12) -> bool:
-        return TestDivisible(divisor.Complex(), self.Complex(), eps=eps)
-
-    def TestDivisible(self, divisor, eps: float=1e-12) -> bool:
+        """ Am I divisible by divisor (within Z[sqrt(-3)])? """
         return TestInGaussIntRoot3(self/divisor, eps=eps)
 
 
-
-maxIterations: int = 100
 intRange: list = [-10, 10]
 s3: float = np.sqrt(3)
 test = GaussIntRoot3(1, 1) # The irreducible element we wish to test
 epsilon: float = 1e-10
 
+maxIterations: int = 100
 for i in range(maxIterations):
     """ The 2*(...) here comes from the need for 'ab' to be divisible by 4
         (which you get from da maffs). 1*(...) and 4*(...) also seems to work
